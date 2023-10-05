@@ -1,11 +1,9 @@
 import { ProfileInformation } from "../ProfileInformation";
-import { UserInformation } from "../types";
-import { formatPhoneNumber } from "../utils/transformations";
 import { FunctionalForm } from "./FunctionalForm";
 import { useState, Dispatch, SetStateAction } from "react";
 
 export type PhoneInputState = [string, string, string, string];
-export type UserInfoType = {
+export type UserInfoPropsType = {
   firstName: string;
   firstNameHandler: (firstNameChange: string) => void;
   lastName: string;
@@ -25,18 +23,18 @@ export const FunctionalApp = () => {
   const [cityInput, setCityInput] = useState("");
   const [phoneInput, setPhoneInput] = useState<PhoneInputState>(["", "", "", ""]);
   const [isInfoValid, setIsInfoValid] = useState(false);
+  const [userData, setUserData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    city: "",
+    phone: "",
+  });
 
-  const userInfo: UserInformation = {
-    firstName: firstNameInput,
-    lastName: lastNameInput,
-    email: emailInput,
-    city: cityInput,
-    phone: formatPhoneNumber(phoneInput),
-  };
   return (
     <>
       <h2>Functional</h2>
-      <ProfileInformation userData={isInfoValid ? userInfo : null} />
+      <ProfileInformation userData={isInfoValid ? userData : null} />
       <FunctionalForm
         userInfoProps={{
           firstName: firstNameInput,
@@ -50,7 +48,8 @@ export const FunctionalApp = () => {
           phone: phoneInput,
           phoneHandler: (phoneChange) => setPhoneInput(phoneChange),
         }}
-        checkValidity={(isValid) => setIsInfoValid(isValid)}
+        isDataValid={(isValid) => setIsInfoValid(isValid)}
+        userDataHandler={(validatedData) => setUserData(validatedData)}
       />
     </>
   );

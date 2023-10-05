@@ -1,7 +1,7 @@
 import { ErrorMessage } from "../ErrorMessage";
 import { TextInput } from "./components/TextInput";
 import { PhoneInput } from "./components/PhoneInput.tsx";
-import { UserInfoType } from "./FunctionalApp.tsx";
+import { UserInfoPropsType } from "./FunctionalApp.tsx";
 import { useState } from "react";
 import {
   isCityInputValid,
@@ -9,6 +9,8 @@ import {
   isNameValid,
   isPhoneInputValid,
 } from "../utils/validations.ts";
+import { UserInformation } from "../types.ts";
+import { capitalize, formatPhoneNumber } from "../utils/transformations.ts";
 
 const firstNameErrorMessage = "First name must be at least 2 characters long";
 const lastNameErrorMessage = "Last name must be at least 2 characters long";
@@ -18,10 +20,12 @@ const phoneNumberErrorMessage = "Invalid Phone Number";
 
 export const FunctionalForm = ({
   userInfoProps,
-  checkValidity,
+  isDataValid,
+  userDataHandler,
 }: {
-  userInfoProps: UserInfoType;
-  checkValidity: (isValid: boolean) => void;
+  userInfoProps: UserInfoPropsType;
+  isDataValid: (isValid: boolean) => void;
+  userDataHandler: (validatedData: UserInformation) => void;
 }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const {
@@ -55,13 +59,30 @@ export const FunctionalForm = ({
     return isSubmitted && !input;
   };
 
+  const formReset = () => {
+    firstNameHandler("");
+    lastNameHandler("");
+    emailHandler("");
+    cityHandler("");
+    phoneHandler(["", "", "", ""]);
+  };
+
   return (
     <form
       onSubmit={(e) => {
         e.preventDefault();
         setIsSubmitted(true);
         if (!validityChecks.includes(false)) {
-          checkValidity(true);
+          isDataValid(true);
+          userDataHandler({
+            firstName: capitalize(firstName),
+            lastName: capitalize(lastName),
+            email: email,
+            city: capitalize(city),
+            phone: formatPhoneNumber(phone),
+          });
+          setIsSubmitted(false);
+          formReset();
         }
       }}
     >
