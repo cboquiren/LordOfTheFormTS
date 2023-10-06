@@ -1,5 +1,7 @@
 import { Component } from "react";
 import { ErrorMessage } from "../ErrorMessage";
+import { TextClassInput } from "./components/TextClassInput";
+import { userInfoClassPropsType } from "./ClassApp";
 
 const firstNameErrorMessage = "First name must be at least 2 characters long";
 const lastNameErrorMessage = "Last name must be at least 2 characters long";
@@ -7,7 +9,7 @@ const emailErrorMessage = "Email is Invalid";
 const cityErrorMessage = "State is Invalid";
 const phoneNumberErrorMessage = "Invalid Phone Number";
 
-export class ClassForm extends Component {
+export class ClassForm extends Component<{ userInfoProps: userInfoClassPropsType }> {
   render() {
     return (
       <form>
@@ -20,6 +22,13 @@ export class ClassForm extends Component {
           <label>{"First Name"}:</label>
           <input placeholder="Bilbo" />
         </div>
+
+        <TextClassInput
+          label="First Name"
+          inputProps={{
+            placeholder: "Bilbo",
+          }}
+        />
         <ErrorMessage message={firstNameErrorMessage} show={true} />
 
         {/* last name input */}
