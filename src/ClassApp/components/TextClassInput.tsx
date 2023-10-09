@@ -8,7 +8,7 @@ export class TextClassInput extends Component<{
     const { label, inputProps } = this.props;
     return (
       <div className="input-wrap">
-        <label>{label}</label>
+        <label>{label}:</label>
         <input type="text" {...inputProps} />
       </div>
     );

@@ -12,18 +12,19 @@ type State = { userInformation: UserInformation | null };
 //   phone: "1234567",
 //   city: "Hobbiton",
 // };
-/* <Record<string, never>, State>  */
 
-export type userInfoClassPropsType = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  city: string;
-  phone: PhoneInputState;
+type ClassState = {
+  firstNameInput: string;
+  lastNameInput: string;
+  emailInput: string;
+  cityInput: string;
+  phoneInput: PhoneInputState;
+  isInfoValid: boolean;
+  userData: UserInformation;
 };
 
 export class ClassApp extends Component {
-  state = {
+  state: ClassState = {
     firstNameInput: "",
     lastNameInput: "",
     emailInput: "",
@@ -33,25 +34,35 @@ export class ClassApp extends Component {
     userData: { firstName: "", lastName: "", email: "", city: "", phone: "" },
   };
   render() {
-    const { firstNameInput, lastNameInput, emailInput, cityInput, phoneInput } = this.state;
+    const {
+      firstNameInput,
+      lastNameInput,
+      emailInput,
+      cityInput,
+      phoneInput,
+      isInfoValid,
+      userData,
+    } = this.state;
     return (
       <>
         <h2>Class</h2>
-        <ProfileInformation
-          userData={
-            // toggle the following lines to change
-            // null
-            null
-          }
-        />
+        <ProfileInformation userData={isInfoValid ? userData : null} />
         <ClassForm
           userInfoProps={{
             firstName: firstNameInput,
+            firstNameHandler: (firstNameChange) =>
+              this.setState({ firstNameInput: firstNameChange }),
             lastName: lastNameInput,
+            lastNameHandler: (lastNameChange) => this.setState({ lastNameInput: lastNameChange }),
             email: emailInput,
+            emailHandler: (emailChange) => this.setState({ emailInput: emailChange }),
             city: cityInput,
+            cityHandler: (cityChange) => this.setState({ cityInput: cityChange }),
             phone: phoneInput,
+            phoneHandler: (phoneChange) => this.setState({ phoneInput: phoneChange }),
           }}
+          isDataValid={(isValid) => this.setState({ isInfoValid: isValid })}
+          userDataHandler={(validatedData) => this.setState({ userData: validatedData })}
         />
       </>
     );
