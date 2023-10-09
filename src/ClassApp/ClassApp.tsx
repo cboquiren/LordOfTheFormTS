@@ -3,7 +3,6 @@ import { ClassForm } from "./ClassForm";
 import { UserInformation } from "../types";
 import { ProfileInformation } from "../ProfileInformation";
 import { PhoneInputState } from "../FunctionalApp/FunctionalApp";
-type State = { userInformation: UserInformation | null };
 
 // const defaultUser: UserInformation = {
 //   email: "default@default.com",
