@@ -16,7 +16,9 @@ function App() {
           <div className="left">
             <FunctionalApp />
           </div>
-          <div className="right">{/* <ClassApp /> */}</div>
+          <div className="right">
+            <ClassApp />
+          </div>
         </div>
       </div>
       <datalist id="cities">

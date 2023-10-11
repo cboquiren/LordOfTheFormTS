@@ -22,6 +22,3 @@ export function isCityInputValid(city:string) {
 export function isPhoneInputValid(phone:PhoneInputState) {
     return phone.join('').length === 7;
 }
-
-
-console.log(isNameValid('car'))

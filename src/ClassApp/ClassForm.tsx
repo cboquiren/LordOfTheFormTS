@@ -1,7 +1,6 @@
 import { Component } from "react";
 import { ErrorMessage } from "../ErrorMessage";
 import { TextClassInput } from "./components/TextClassInput";
-import { UserInfoPropsType } from "../FunctionalApp/FunctionalApp";
 import { PhoneClassInput } from "./components/PhoneClassInput";
 import {
   isCityInputValid,
@@ -9,7 +8,7 @@ import {
   isNameValid,
   isPhoneInputValid,
 } from "../utils/validations";
-import { UserInformation } from "../types";
+import { PhoneInputState, UserInformation } from "../types";
 import { capitalize, formatPhoneNumber } from "../utils/transformations";
 
 const firstNameErrorMessage = "First name must be at least 2 characters long";
@@ -18,35 +17,36 @@ const emailErrorMessage = "Email is Invalid";
 const cityErrorMessage = "State is Invalid";
 const phoneNumberErrorMessage = "Invalid Phone Number";
 
+type FormStateType = {
+  isSubmitted: boolean;
+  firstNameInput: string;
+  lastNameInput: string;
+  emailInput: string;
+  cityInput: string;
+  phoneInput: PhoneInputState;
+};
+
 export class ClassForm extends Component<{
-  userInfoProps: UserInfoPropsType;
-  isDataValid: (isValid: boolean) => void;
   userDataHandler: (validatedData: UserInformation) => void;
 }> {
-  state = {
+  state: FormStateType = {
     isSubmitted: false,
+    firstNameInput: "",
+    lastNameInput: "",
+    emailInput: "",
+    cityInput: "",
+    phoneInput: ["", "", "", ""],
   };
   render() {
-    const { userInfoProps, isDataValid, userDataHandler } = this.props;
-    const { isSubmitted } = this.state;
-    const {
-      firstName,
-      firstNameHandler,
-      lastName,
-      lastNameHandler,
-      email,
-      emailHandler,
-      city,
-      cityHandler,
-      phone,
-      phoneHandler,
-    } = userInfoProps;
+    const { userDataHandler } = this.props;
+    const { isSubmitted, firstNameInput, lastNameInput, emailInput, cityInput, phoneInput } =
+      this.state;
 
-    const isFirstNameValid = isNameValid(firstName);
-    const isLastNameValid = isNameValid(lastName);
-    const isEmailValid = isEmailInputValid(email);
-    const isCityValid = isCityInputValid(city);
-    const isPhoneValid = isPhoneInputValid(phone);
+    const isFirstNameValid = isNameValid(firstNameInput);
+    const isLastNameValid = isNameValid(lastNameInput);
+    const isEmailValid = isEmailInputValid(emailInput);
+    const isCityValid = isCityInputValid(cityInput);
+    const isPhoneValid = isPhoneInputValid(phoneInput);
 
     const validityChecks = [
       isFirstNameValid,
@@ -56,16 +56,21 @@ export class ClassForm extends Component<{
       isPhoneValid,
     ];
 
+    const isDataValid = validityChecks.every((n) => n);
+
     const shouldShowError = (input: boolean) => {
       return isSubmitted && !input;
     };
 
     const formReset = () => {
-      firstNameHandler("");
-      lastNameHandler("");
-      emailHandler("");
-      cityHandler("");
-      phoneHandler(["", "", "", ""]);
+      this.setState({
+        isSubmitted: false,
+        firstNameInput: "",
+        lastNameInput: "",
+        emailInput: "",
+        cityInput: "",
+        phoneInput: ["", "", "", ""],
+      });
     };
 
     return (
@@ -73,17 +78,17 @@ export class ClassForm extends Component<{
         onSubmit={(e) => {
           e.preventDefault();
           this.setState({ isSubmitted: true });
-          if (!validityChecks.includes(false)) {
-            isDataValid(true);
+          if (isDataValid) {
             userDataHandler({
-              firstName: capitalize(firstName),
-              lastName: capitalize(lastName),
-              email: email,
-              city: capitalize(city),
-              phone: formatPhoneNumber(phone),
+              firstName: capitalize(firstNameInput),
+              lastName: capitalize(lastNameInput),
+              email: emailInput,
+              city: capitalize(cityInput),
+              phone: formatPhoneNumber(phoneInput),
             });
-            this.setState({ isSubmitted: false });
             formReset();
+          } else {
+            alert("Bad Input");
           }
         }}
       >
@@ -96,9 +101,9 @@ export class ClassForm extends Component<{
           label="First Name"
           inputProps={{
             placeholder: "Bilbo",
-            value: firstName,
+            value: firstNameInput,
             onChange: (e) => {
-              firstNameHandler(e.target.value);
+              this.setState({ firstNameInput: e.target.value });
             },
           }}
         />
@@ -109,9 +114,9 @@ export class ClassForm extends Component<{
           label="Last Name"
           inputProps={{
             placeholder: "Baggins",
-            value: lastName,
+            value: lastNameInput,
             onChange: (e) => {
-              lastNameHandler(e.target.value);
+              this.setState({ lastNameInput: e.target.value });
             },
           }}
         />
@@ -122,9 +127,9 @@ export class ClassForm extends Component<{
           label="Email"
           inputProps={{
             placeholder: "bilbo-baggins@adventurehobbit.net",
-            value: email,
+            value: emailInput,
             onChange: (e) => {
-              emailHandler(e.target.value);
+              this.setState({ emailInput: e.target.value });
             },
           }}
         />
@@ -135,15 +140,18 @@ export class ClassForm extends Component<{
           label="City"
           inputProps={{
             placeholder: "Hobbiton",
-            value: city,
+            value: cityInput,
             onChange: (e) => {
-              cityHandler(e.target.value);
+              this.setState({ cityInput: e.target.value });
             },
           }}
         />
         <ErrorMessage message={cityErrorMessage} show={shouldShowError(isCityValid)} />
 
-        <PhoneClassInput phoneNumberInput={phone} setPhoneNumberInput={phoneHandler} />
+        <PhoneClassInput
+          phoneNumberInput={phoneInput}
+          setPhoneNumberInput={(newPhone) => this.setState({ phoneInput: newPhone })}
+        />
         <ErrorMessage message={phoneNumberErrorMessage} show={shouldShowError(isPhoneValid)} />
 
         <input type="submit" value="Submit" />

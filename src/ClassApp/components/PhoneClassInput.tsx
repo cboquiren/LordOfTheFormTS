@@ -1,5 +1,5 @@
 import { Component, Dispatch, SetStateAction, createRef, ChangeEventHandler } from "react";
-import { PhoneInputState } from "../../FunctionalApp/FunctionalApp";
+import { PhoneInputState } from "../../types";
 
 export class PhoneClassInput extends Component<{
   phoneNumberInput: PhoneInputState;
