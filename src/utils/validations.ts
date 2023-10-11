@@ -1,4 +1,4 @@
-import { PhoneInputState } from "../FunctionalApp/FunctionalApp";
+import { PhoneInputState } from "../types";
 import { allCities } from "./all-cities";
 import { capitalize } from "./transformations";
 
@@ -9,9 +9,10 @@ export function isEmailInputValid(emailAddress: string) {
 }
 
 export function isNameValid(name:string) {
-    return name
-        .split('')
-        .every(char => char.toLowerCase() !== char.toUpperCase() && name.length > 2);
+    if (name.length > 2) {
+        return name.split('').every(char => char.toLowerCase() !== char.toUpperCase());
+    } else {return false}
+
 }
 
 export function isCityInputValid(city:string) {
@@ -21,3 +22,6 @@ export function isCityInputValid(city:string) {
 export function isPhoneInputValid(phone:PhoneInputState) {
     return phone.join('').length === 7;
 }
+
+
+console.log(isNameValid('car'))
